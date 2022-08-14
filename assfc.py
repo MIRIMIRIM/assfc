@@ -17,7 +17,8 @@ default_config = { "font_dirs":[],
             "verbose":False,
             "exclude_unused_fonts":False,
             "exclude_comments":False,
-            "log_file":None}
+            "log_file":None,
+            "conf_file":None}
 
 def get_script_directory():
     return os.path.dirname(__file__)
@@ -35,7 +36,11 @@ def merge_configs(args, file, default):
     return config
 
 def get_config(args):
-    with open(os.path.join(get_script_directory(), "config.json")) as file:
+    if args.conf_file is None:
+        conf = os.path.join(get_script_directory(), "config.json")
+    else:
+        conf = args.conf_file
+    with open(conf) as file:
         file_text = file.read()
     from_file = JSONDecoder().decode(file_text)
     return merge_configs(args, from_file, default_config)
@@ -133,14 +138,15 @@ if __name__ == '__main__':
     group.add_argument('--exclude-unused-fonts', action='store_true', dest='exclude_unused_fonts', help='Exclude fonts without any glyphs used')
     group.add_argument('--include-unused-fonts', action='store_false', dest='exclude_unused_fonts', help='Include fonts without any glyphs used')
 
-    parser.add_argument('-v','--verbose', action='store_true', dest='verbose', help='print additional log info (debug level)')
+    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', help='print additional log info (debug level)')
     parser.add_argument('--log', dest='log_file', metavar='file', help='Output log to file')
+    parser.add_argument('-c', '--config', dest='conf_file', metavar='file', help='Config of assfc')
     parser.add_argument('--rebuild-cache', action='store_true', dest='rebuild_cache', help='Rebuild font cache')
 
     parser.add_argument('-o', '--output', default=None, dest='output_location', metavar='folder/file', help='output folder or mks file')
     parser.add_argument('script', default=None, help='input script')
     parser.set_defaults(include_system_fonts = None, exclude_comments=None, exclude_unused_fonts = None,
-                        verbose = None, log_file = None, rebuild_cache=False, output_location=None)
+                        verbose = None, log_file = None, conf_file=None, rebuild_cache=False, output_location=None)
     args = parser.parse_args(sys.argv[1:])
     process(args)
 #    cProfile.run('process(args)', sort='time', filename='profile.txt')

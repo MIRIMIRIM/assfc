@@ -21,3 +21,5 @@ pip-log.txt
 
 #pycharm stuff
 .idea
+*.TTF
+*.otf

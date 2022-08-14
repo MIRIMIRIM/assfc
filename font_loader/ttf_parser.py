@@ -129,9 +129,9 @@ class TTFFont(object):
 
     def __parse_styles(self, sub_family_name):
         name = sub_family_name.lower()
-        if name.find('bold') is not -1:
+        if name.find('bold') != -1:
             self.__bold = True
-        if name.find('italic') is not -1:
+        if name.find('italic') != -1:
             self.__italic = True
 
     def print_headers(self):
